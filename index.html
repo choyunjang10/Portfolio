@@ -938,11 +938,35 @@
     const projects = [
       {
         num: '01',
-        tag: 'Language',
+        tag: 'Branding · Language',
         title: '나혼자만 JLPT',
-        badges: ['일본어', '자기계발', '학습 콘텐츠'],
-        overview: `일본어 능력 시험(JLPT)을 혼자 준비하는 과정을 기록하고 공유하는 개인 프로젝트입니다.`,
-        body: `단순히 시험을 준비하는 것을 넘어, 학습 과정 자체를 콘텐츠로 만들어 나가는 것이 핵심 목표입니다.\n\n매일의 학습 기록, 단어장, 학습 팁 등을 정리하여 같은 목표를 가진 사람들과 나눌 수 있는 공간을 만들었습니다. 꾸준함의 가치를 믿으며, 혼자서도 할 수 있다는 것을 증명해가는 프로젝트입니다.`,
+        badges: ['Instagram Reels', 'YouTube Shorts', '브랜드 기획', '데이터 분석', '콘텐츠 제작'],
+        sections: [
+          {
+            label: 'Overview',
+            content: `플랫폼: Instagram (Reels), YouTube Shorts<br>역할: 브랜드 총괄 기획, 콘텐츠 제작, 데이터 분석 및 커뮤니티 관리<br><br>MZ세대를 타겟으로 한 '소비 가능한 학습 콘텐츠' 매거진 브랜딩 프로젝트입니다. 기존 교과서 위주의 정적인 학습과 긴 러닝타임으로 인한 높은 이탈률을 해결하기 위해, 30~60초 내 학습 완결 구조를 설계하여 접근성을 극대화했습니다.`
+          },
+          {
+            label: 'Strategy',
+            content: `<strong style="color:var(--cream)">기획 의도 및 시장 분석</strong><br><br>기존 시장의 페인 포인트는 교과서 위주의 정적인 학습, 긴 러닝타임으로 인한 높은 이탈률이었습니다.<br><br>이를 해결하기 위해 3가지 솔루션을 설계했습니다. 첫째, 30~60초 내 '학습 완결 구조'로 접근성을 극대화했습니다. 둘째, 애니메이션 밈(Meme)과 실전 회화를 결합해 학습 동기를 부여했습니다. 셋째, JLPT 등급별 체계적 구조화를 통해 전문성을 확보했습니다.`
+          },
+          {
+            label: 'Data-Driven Insight',
+            content: `<strong style="color:var(--cream)">운영 2개월 차, 철저한 지표 분석을 통한 콘텐츠 최적화 수행</strong><br><br>트렌드 민감도: 유행하는 챌린지 및 자극적인 음원을 활용했을 때 상호작용(Interaction) 급증을 확인했습니다.<br><br>타겟 공감대: 생소한 소재보다 시청자에게 익숙한 애니메이션/노래 활용 시 높은 반응을 도출했습니다.<br><br>활동 시간 최적화: 인사이트 분석을 통해 토/일 18~21시, 월 15~18시 등 타겟층의 활동이 가장 활발한 골든타임을 도출하고 업로드 스케줄링에 적용했습니다.`
+          },
+          {
+            label: 'Contents & Business',
+            content: `카테고리 다각화: JLPT 단어 테스트, 애니 대사 회화, 여행 상황별 표현 등 5개 핵심 카테고리를 운영합니다.<br><br>플랫폼 확장: 인스타그램(@sololeveling.jlpt) 기반의 파생 웹사이트 '나혼자만 단어' 운영으로 학습 편의성을 제공합니다.<br><br>수익 모델(BM) 구축: 브랜드 정체성을 담은 티셔츠 및 키링 등 굿즈 기획을 통해 팬덤 형성 및 학습 자부심(Identity)을 고취합니다.`
+          },
+          {
+            label: 'Core Competencies',
+            content: `Contents Literacy: 숏폼 UI/UX에 최적화된 후킹 문장 및 복습 구조 설계.<br><br>Community Management: 퀴즈 및 댓글 참여 유도형 질문 설계를 통한 팔로워 소통 강화.<br><br>Branding: 단순 학습 계정을 넘어 굿즈와 웹사이트가 결합된 통합 브랜드 경험(BX) 설계.`
+          },
+          {
+            label: 'Roadmap',
+            content: `사용자 반응 데이터를 기반으로 한 애니메이션 협업 콘텐츠 확대.<br><br>'나혼자만 단어' 웹사이트 내 학습 기능 고도화 및 커뮤니티 활성화.`
+          }
+        ],
         link: 'https://slashpage.com/s/page943zqpmqxprrg2wnvy87'
       },
       {
@@ -970,7 +994,26 @@
     function renderDetail(index) {
       const p = projects[index];
       const content = document.getElementById('detailContent');
-      const bodyLines = p.body.split('\n\n').map(line => `<p>${line}</p>`).join('');
+
+      // sections 배열이 있으면 섹션별 렌더링, 없으면 기존 방식
+      let sectionsHTML = '';
+      if (p.sections) {
+        sectionsHTML = p.sections.map(s => `
+          <p class="detail-section-label">${s.label}</p>
+          <div class="detail-body"><p>${s.content}</p></div>
+          <div class="detail-divider"></div>
+        `).join('');
+      } else {
+        const bodyLines = p.body.split('\n\n').map(line => `<p>${line}</p>`).join('');
+        sectionsHTML = `
+          <p class="detail-section-label">Overview</p>
+          <div class="detail-body"><p>${p.overview}</p></div>
+          <div class="detail-divider"></div>
+          <p class="detail-section-label">Details</p>
+          <div class="detail-body">${bodyLines}</div>
+          <div class="detail-divider"></div>
+        `;
+      }
 
       content.innerHTML = `
         <div class="detail-num">${p.num} — ${p.tag}</div>
@@ -979,10 +1022,7 @@
           ${p.badges.map(b => `<span class="detail-badge">${b}</span>`).join('')}
         </div>
         <div class="detail-divider"></div>
-        <p class="detail-section-label">Overview</p>
-        <div class="detail-body"><p>${p.overview}</p></div>
-        <p class="detail-section-label">Details</p>
-        <div class="detail-body">${bodyLines}</div>
+        ${sectionsHTML}
         <a class="detail-link" href="${p.link}" target="_blank" rel="noopener">
           프로젝트 보러가기
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHO YUNJANG — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Serif+KR:wght@300;400;600&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0a0a08;
+      --surface: #111110;
+      --green: #5aff6e;
+      --green-dim: #2e7a38;
+      --cream: #f0ead8;
+      --muted: #6b6b5e;
+      --border: #222220;
+      --gap: clamp(2rem, 5vw, 5rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Noto Serif KR', serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--green);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: transform 0.15s ease, width 0.2s, height 0.2s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid var(--green);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.5;
+      transition: transform 0.35s ease, opacity 0.2s;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9990;
+      opacity: 0.35;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem var(--gap);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      border-color: var(--border);
+      background: rgba(10,10,8,0.85);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.12em;
+      color: var(--green);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      position: relative;
+      padding: 8rem var(--gap) 4rem;
+      overflow: hidden;
+    }
+    .hero-bg-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(6rem, 22vw, 22rem);
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(90,255,110,0.07);
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      user-select: none;
+      pointer-events: none;
+      animation: bgDrift 18s ease-in-out infinite alternate;
+    }
+    @keyframes bgDrift {
+      from { transform: translate(-50%, -50%) translateX(-2%); }
+      to   { transform: translate(-50%, -50%) translateX(2%); }
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .hero-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 12vw, 10rem);
+      line-height: 0.9;
+      letter-spacing: 0.03em;
+      color: var(--cream);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-name span { color: var(--green); }
+    .hero-sub {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.85rem 2rem;
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: background 0.25s, color 0.25s;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .hero-cta:hover { background: var(--green); color: var(--bg); }
+    .hero-cta svg { width: 14px; transition: transform 0.2s; }
+    .hero-cta:hover svg { transform: translateX(4px); }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 1s 1.4s forwards;
+    }
+    .hero-scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollLine 2s 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* ── SECTION BASE ── */
+    section { padding: clamp(5rem, 10vw, 9rem) var(--gap); }
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 1;
+      color: var(--cream);
+      margin-bottom: 3rem;
+    }
+
+    /* ── ABOUT ── */
+    #about { border-top: 1px solid var(--border); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem 6rem;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--cream);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+    .about-text p span { color: var(--green); }
+
+    .about-facts { display: flex; flex-direction: column; gap: 1.2rem; }
+    .fact-item {
+      display: flex;
+      gap: 1.2rem;
+      align-items: flex-start;
+      padding: 1.2rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: border-color 0.2s;
+    }
+    .fact-item:hover { border-color: var(--green-dim); }
+    .fact-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      line-height: 1.7;
+    }
+    .fact-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .fact-text strong { color: var(--cream); display: block; margin-bottom: 0.2rem; font-weight: 400; }
+
+    /* ── CERTS ── */
+    #certs { border-top: 1px solid var(--border); }
+    .certs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .cert-card {
+      padding: 1.8rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .cert-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--green);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s;
+    }
+    .cert-card:hover::before { transform: scaleY(1); }
+    .cert-card:hover { border-color: var(--green-dim); transform: translateY(-4px); }
+    .cert-icon { font-size: 1.6rem; margin-bottom: 1rem; display: block; }
+    .cert-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.95rem;
+      color: var(--cream);
+      margin-bottom: 0.4rem;
+    }
+    .cert-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--green);
+      text-transform: uppercase;
+    }
+    .cert-status.pending { color: var(--muted); }
+
+    /* ── PROJECTS ── */
+    #projects { border-top: 1px solid var(--border); }
+    .projects-list { display: flex; flex-direction: column; gap: 0; }
+    .project-row {
+      display: grid;
+      grid-template-columns: 3rem 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .project-row:first-child { border-top: 1px solid var(--border); }
+    .project-row:hover .project-name { color: var(--green); }
+    .project-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .project-info {}
+    .project-name {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--cream);
+      font-weight: 600;
+      transition: color 0.2s;
+      margin-bottom: 0.3rem;
+    }
+    .project-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .project-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .project-row:hover .project-tag { border-color: var(--green-dim); color: var(--green); }
+
+    /* ── ACTIVITIES ── */
+    #activities { border-top: 1px solid var(--border); }
+    .activities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem 6rem;
+    }
+    .activity-group-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .activity-item {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-name {
+      font-size: 0.95rem;
+      color: var(--cream);
+      margin-bottom: 0.3rem;
+    }
+    .activity-detail {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 0.6rem;
+      padding: 0.1rem 0.5rem;
+      background: var(--green);
+      color: var(--bg);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .contact-big {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 9rem);
+      line-height: 0.9;
+      color: var(--cream);
+      margin-bottom: 2rem;
+    }
+    .contact-big span { color: var(--green); }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .contact-link:hover { color: var(--green); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem var(--gap);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+    .footer-heart {
+      font-size: 0.8rem;
+      color: var(--green);
+    }
+
+    /* ── REVEAL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .about-grid, .activities-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .nav-links { display: none; }
+      .project-row { grid-template-columns: 2.5rem 1fr; }
+      .project-tag { display: none; }
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a class="nav-logo" href="#">CYJ</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#certs">자격증</a></li>
+      <li><a href="#projects">프로젝트</a></li>
+      <li><a href="#activities">활동</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg-text">CHO</div>
+    <div class="hero-inner">
+      <p class="hero-tag">💚 Portfolio — 2024</p>
+      <h1 class="hero-name">CHO<br><span>YUNJANG</span></h1>
+      <p class="hero-sub">디지털 · 브랜드 마케터, 시나리오 디렉터를 꿈꾸는 05년생 청년의 이야기</p>
+      <a href="#about" class="hero-cta">
+        더 알아보기
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </a>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label reveal">About Me</p>
+    <h2 class="section-title reveal reveal-delay-1">나는 누구인가</h2>
+    <div class="about-grid">
+      <div class="about-text reveal reveal-delay-2">
+        <p>안녕하세요! <span>디지털/브랜드 마케터</span>, 혹은 <span>시나리오 디렉터</span>가 되고 싶은 05년생 청년 조윤장입니다.</p>
+        <p>콘텐츠와 브랜드가 사람들과 어떻게 연결되는지에 깊은 관심을 갖고, 매일 새로운 것을 배우며 성장하고 있습니다.</p>
+        <p>현재 강남대학교에서 글로벌경영학과와 문화콘텐츠학과를 복수전공하며 실력을 쌓는 중입니다. 💚</p>
+      </div>
+      <div class="about-facts reveal reveal-delay-3">
+        <div class="fact-item">
+          <span class="fact-icon">🏫</span>
+          <div class="fact-text">
+            <strong>고등학교</strong>
+            조원고등학교 18회 졸업
+          </div>
+        </div>
+        <div class="fact-item">
+          <span class="fact-icon">🎓</span>
+          <div class="fact-text">
+            <strong>대학교</strong>
+            강남대학교 글로벌경영학과 · 문화콘텐츠학과 복수전공 24학번
+          </div>
+        </div>
+        <div class="fact-item">
+          <span class="fact-icon">✍️</span>
+          <div class="fact-text">
+            <strong>블로그</strong>
+            네이버 블로그 운영 (2017~ing) · 패션 인플루언서 활동 중
+          </div>
+        </div>
+        <div class="fact-item">
+          <span class="fact-icon">🏆</span>
+          <div class="fact-text">
+            <strong>수상</strong>
+            2025학년도 KNU 커리어 로드맵 경진대회 장려상
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTS -->
+  <section id="certs">
+    <p class="section-label reveal">Certifications</p>
+    <h2 class="section-title reveal reveal-delay-1">자격증</h2>
+    <div class="certs-grid">
+      <div class="cert-card reveal reveal-delay-1">
+        <span class="cert-icon">📊</span>
+        <p class="cert-name">Google Analytics 자격증 (GA4)</p>
+        <span class="cert-status">✔ 취득 완료</span>
+      </div>
+      <div class="cert-card reveal reveal-delay-2">
+        <span class="cert-icon">🎨</span>
+        <p class="cert-name">GTQ 그래픽기술 자격증 2급</p>
+        <span class="cert-status">✔ 국가공인 취득</span>
+      </div>
+      <div class="cert-card reveal reveal-delay-3">
+        <span class="cert-icon">💻</span>
+        <p class="cert-name">ITQ 정보기술 자격증</p>
+        <span class="cert-status">✔ 한글 · 엑셀 · 파워포인트 3과목</span>
+      </div>
+      <div class="cert-card reveal reveal-delay-4">
+        <span class="cert-icon">🖥️</span>
+        <p class="cert-name">컴퓨터 활용 능력평가</p>
+        <span class="cert-status pending">◎ 취득 예정</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="section-label reveal">Projects</p>
+    <h2 class="section-title reveal reveal-delay-1">개인 프로젝트</h2>
+    <div class="projects-list reveal reveal-delay-2">
+      <a class="project-row" href="https://slashpage.com/s/page943zqpmqxprrg2wnvy87" target="_blank" rel="noopener">
+        <span class="project-num">01</span>
+        <div class="project-info">
+          <p class="project-name">나혼자만 JLPT</p>
+          <p class="project-desc">혼자 도전하는 일본어 학습 프로젝트 · 학습 기록 & 콘텐츠 제작</p>
+        </div>
+        <span class="project-tag">Language</span>
+      </a>
+      <a class="project-row" href="https://slashpage.com/s/pagedwy5rvmjpgqjvmp46zn9" target="_blank" rel="noopener">
+        <span class="project-num">02</span>
+        <div class="project-info">
+          <p class="project-name">BranDNA (브랜디엔에이)</p>
+          <p class="project-desc">브랜드의 DNA를 분석하고 기록하는 개인 프로젝트</p>
+        </div>
+        <span class="project-tag">Branding</span>
+      </a>
+      <a class="project-row" href="https://slashpage.com/s/page93nzyxmdvdgpnmwk6r45" target="_blank" rel="noopener">
+        <span class="project-num">03</span>
+        <div class="project-info">
+          <p class="project-name">VocaLyric</p>
+          <p class="project-desc">가사를 통해 배우는 어휘 학습 콘텐츠 프로젝트</p>
+        </div>
+        <span class="project-tag">Education</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ACTIVITIES -->
+  <section id="activities">
+    <p class="section-label reveal">Activities</p>
+    <h2 class="section-title reveal reveal-delay-1">활동 이력</h2>
+    <div class="activities-grid">
+      <div class="reveal reveal-delay-2">
+        <p class="activity-group-title">교내 활동</p>
+        <div class="activity-item">
+          <p class="activity-name">
+            용인 매거진 / Yongmag
+          </p>
+          <p class="activity-detail">대학교 매거진 제작 참여 · 콘텐츠 기획 & 편집</p>
+        </div>
+        <div class="activity-item">
+          <p class="activity-name">
+            KNU 커리어 로드맵 경진대회
+            <span class="badge">장려상</span>
+          </p>
+          <p class="activity-detail">2025학년도 포트폴리오 경진대회 수상</p>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <p class="activity-group-title">교외 활동</p>
+        <div class="activity-item">
+          <p class="activity-name">네이버 블로그 인플루언서</p>
+          <p class="activity-detail">2017년 ~ 현재 · 패션 카테고리 활동 중</p>
+        </div>
+        <div class="activity-item">
+          <p class="activity-name">디지털 마케팅 학습</p>
+          <p class="activity-detail">Google Analytics · SNS 마케팅 · 브랜드 전략 연구</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label reveal">Contact</p>
+    <h2 class="contact-big reveal reveal-delay-1">함께<br><span>만들어요</span></h2>
+    <div class="contact-links reveal reveal-delay-2">
+      <a class="contact-link" href="https://slashpage.com/choyunjang" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 1.5C8 1.5 6 4.5 6 8s2 6.5 2 6.5M8 1.5C8 1.5 10 4.5 10 8s-2 6.5-2 6.5M1.5 8h13"/></svg>
+        Slashpage
+      </a>
+      <a class="contact-link" href="https://blog.naver.com/" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="13" height="13" rx="1"/><path d="M5 5l6 6M11 5l-6 6"/></svg>
+        Naver Blog
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-copy">© 2025 CHO YUNJANG. All rights reserved.</p>
+    <p class="footer-heart">💚</p>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animateCursor() {
+      cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+      requestAnimationFrame(animateCursor);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.style.transform += ' scale(2.5)'; });
+      el.addEventListener('mouseleave', () => {});
+    });
+
+    // Sticky nav
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
